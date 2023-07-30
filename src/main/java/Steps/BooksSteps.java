@@ -31,7 +31,7 @@ public class BooksSteps {
         return this;
     }
 
-    public int getNumberOfBooks() {
+    public int getOReillyBooksSizeFromUI() {
         return booksPage.publisherElements.size();
     }
 
