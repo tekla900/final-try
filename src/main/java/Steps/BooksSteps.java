@@ -40,16 +40,10 @@ public class BooksSteps {
 
     @Step
     public BooksSteps assertLastBookInUi() {
-        System.out.println(booksPage.lastBook.getText() + "\n");
-//        System.out.println(booksPage.lastBook);
+        System.out.println(booksPage.books.size() + "\n");
 
-//        Assert.assertEquals(booksPage.lastBook.getText(), booksData.expectedTitle);
-
-        System.out.println(booksPage.books.get(7) + " index7\n");
-        for (SelenideElement book:
-                booksPage.books) {
-            System.out.println("book: " + book + "\n");
-            System.out.println("text: " + book.getText() + "\n");
+        for (SelenideElement el : booksPage.books) {
+            System.out.println(el.getText());
         }
 
 //        booksPage.lastBook.getText().should(Condition.matchText(booksData.expectedTitle));

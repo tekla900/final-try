@@ -32,11 +32,11 @@ public class BooksTests extends Config {
                 .getObject("", BookList.class);
 
         List<Book> books = booksList.books;
-        List<Book> booksWithPublisherOReillyMedia = books.stream().filter(x->x.publisher.equals("O'Reilly Media")).collect(Collectors.toList());
+        List<Book> booksWithPublisherOReillyMedia = books.stream().filter(each -> each.publisher.equals("O'Reilly Media")).collect(Collectors.toList());
 
         int bookCount = booksWithPublisherOReillyMedia.size();
 
-        Book book = books.stream().filter(x->x.title.equals("Understanding ECMAScript 6")).collect(Collectors.toList()).get(0);
+        Book book = books.stream().filter(each -> each.title.equals("Understanding ECMAScript 6")).collect(Collectors.toList()).get(0);
         int indexOfBook = books.indexOf(book);
         int lastIndex = books.size() - 1;
 
