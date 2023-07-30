@@ -1,13 +1,17 @@
 package Steps;
 
 import Data.BooksData;
+import Models.Book;
+import Models.BookList;
 import Pages.BooksPage;
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.asynchttpclient.util.Assertions;
-import org.testng.Assert;
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.codeborne.selenide.Selenide.refresh;
 import static org.testng.Assert.assertEquals;
 
 public class BooksSteps {
@@ -28,8 +32,7 @@ public class BooksSteps {
     }
 
     public int getNumberOfBooks() {
-        int expectedCount = booksPage.publisherElements.size();
-        return expectedCount;
+        return booksPage.publisherElements.size();
     }
 
     @Step
@@ -40,20 +43,40 @@ public class BooksSteps {
 
     @Step
     public BooksSteps assertLastBookInUi() {
-        System.out.println(booksPage.books.size() + "\n");
-
-        for (SelenideElement el : booksPage.books) {
-            System.out.println(el.getText());
-        }
-
-//        booksPage.lastBook.getText().should(Condition.matchText(booksData.expectedTitle));
+        refresh();
+        assertEquals(booksPage.books.get(booksPage.books.size()-1).getText(), booksData.expectedTitle);
         return this;
     }
 
     @Step
-    public BooksSteps assertLastBookInApi(int indexOfBook, int lastIndex) {
-        assertEquals(indexOfBook,lastIndex);
+    public List<Book> getBookList() {
+        Response response = RestAssured.given().when()
+                .get("https://bookstore.toolsqa.com/BookStore/v1/Books");
+        BookList booksList= response
+                .jsonPath()
+                .getObject("", BookList.class);
 
+        List<Book> books = booksList.books;
+
+        return books;
+    }
+
+    @Step
+    public int getOReillyBooksSizeFromApi() {
+
+        List<Book> booksWithPublisherOReillyMedia = getBookList().stream().filter(each -> each.publisher.equals("O'Reilly Media")).collect(Collectors.toList());
+
+        return booksWithPublisherOReillyMedia.size();
+    }
+
+    @Step
+    public BooksSteps assertLastBookInApi() {
+
+        Book book = getBookList().stream().filter(each -> each.title.equals("Understanding ECMAScript 6")).collect(Collectors.toList()).get(0);
+        int indexOfBook = getBookList().indexOf(book);
+        int lastIndex = getBookList().size() - 1;
+
+        assertEquals(indexOfBook,lastIndex);
         return this;
     }
 }

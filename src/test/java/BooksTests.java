@@ -25,25 +25,10 @@ public class BooksTests extends Config {
     @Story("validate books")
     public void validateBooksByPublisherInUI() {
 
-        Response response = RestAssured.given().when()
-                .get("https://bookstore.toolsqa.com/BookStore/v1/Books");
-        BookList booksList= response
-                .jsonPath()
-                .getObject("", BookList.class);
-
-        List<Book> books = booksList.books;
-        List<Book> booksWithPublisherOReillyMedia = books.stream().filter(each -> each.publisher.equals("O'Reilly Media")).collect(Collectors.toList());
-
-        int bookCount = booksWithPublisherOReillyMedia.size();
-
-        Book book = books.stream().filter(each -> each.title.equals("Understanding ECMAScript 6")).collect(Collectors.toList()).get(0);
-        int indexOfBook = books.indexOf(book);
-        int lastIndex = books.size() - 1;
-
         booksSteps.inputPublisherToSearch()
                 .searchBasedOnPublisher()
-                .assertBooksNumber(booksSteps.getNumberOfBooks(), bookCount)
-                .assertLastBookInApi(indexOfBook, lastIndex)
+                .assertBooksNumber(booksSteps.getNumberOfBooks(), booksSteps.getOReillyBooksSizeFromApi())
+                .assertLastBookInApi()
                 .assertLastBookInUi();
     }
 }
