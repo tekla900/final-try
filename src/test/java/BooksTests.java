@@ -1,3 +1,4 @@
+import Models.Request.BookRequest;
 import Steps.BooksSteps;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
@@ -17,9 +18,8 @@ public class BooksTests extends Config {
     @Story("validate books")
     public void validateBooksByPublisherInUI() {
 
-        booksSteps.inputPublisherToSearch()
-                .searchBasedOnPublisher()
-                .assertBooksNumber(booksSteps.getOReillyBooksSizeFromUI(), booksSteps.getOReillyBooksSizeFromApi())
+        booksSteps.searchBasedOnPublisher()
+                .assertBooksNumber(booksSteps.getOReillyBooksSizeFromUI(), BookRequest.getBooksByPublisher("O'Reilly Media").size())
                 .assertLastBookInApi()
                 .assertLastBookInUi();
     }

@@ -11,9 +11,7 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class BooksPage {
     public SelenideElement
-        searchBox = $("#searchBox"),
-        searchBtn = $("#basic-addon2");
-
+        searchBox = $("#searchBox");
     public ElementsCollection publisherElements = $$("[class='rt-td']").filter(Condition.text("O'Reilly Media")),
 
         books =  $$(".action-buttons");

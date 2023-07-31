@@ -1,15 +1,9 @@
 package Steps;
 
 import Data.BooksData;
-import Models.Book;
-import Models.BookList;
+import Models.Request.BookRequest;
 import Pages.BooksPage;
 import io.qameta.allure.Step;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.refresh;
 import static org.testng.Assert.assertEquals;
@@ -20,14 +14,8 @@ public class BooksSteps {
     BooksPage booksPage = new BooksPage();
 
     @Step
-    public BooksSteps inputPublisherToSearch() {
-        booksPage.searchBox.setValue(booksData.publisherToSearch);
-        return this;
-    }
-
-    @Step
     public BooksSteps searchBasedOnPublisher() {
-        booksPage.searchBtn.click();
+        booksPage.searchBox.setValue(booksData.publisherToSearch);
         return this;
     }
 
@@ -49,34 +37,10 @@ public class BooksSteps {
     }
 
     @Step
-    public List<Book> getBookList() {
-        Response response = RestAssured.given().when()
-                .get("https://bookstore.toolsqa.com/BookStore/v1/Books");
-        BookList booksList= response
-                .jsonPath()
-                .getObject("", BookList.class);
-
-        List<Book> books = booksList.books;
-
-        return books;
-    }
-
-    @Step
-    public int getOReillyBooksSizeFromApi() {
-
-        List<Book> booksWithPublisherOReillyMedia = getBookList().stream().filter(each -> each.publisher.equals("O'Reilly Media")).collect(Collectors.toList());
-
-        return booksWithPublisherOReillyMedia.size();
-    }
-
-    @Step
     public BooksSteps assertLastBookInApi() {
 
-        Book book = getBookList().stream().filter(each -> each.title.equals("Understanding ECMAScript 6")).collect(Collectors.toList()).get(0);
-        int indexOfBook = getBookList().indexOf(book);
-        int lastIndex = getBookList().size() - 1;
-
-        assertEquals(indexOfBook,lastIndex);
+        assertEquals(BookRequest.getAllBooks().getBooks().get(BookRequest.getAllBooks().getBooks().size() - 1).getTitle(), booksData.expectedTitle);
         return this;
     }
+
 }

@@ -25,7 +25,6 @@ public class Config implements ITestListener {
 
     @BeforeMethod
     public void setUp() {
-
 //        Configuration.startMaximized = true;
         Configuration.timeout = 10000;
         open("https://demoqa.com/books");
